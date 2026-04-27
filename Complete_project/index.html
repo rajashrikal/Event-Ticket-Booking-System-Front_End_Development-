@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EventSpark – Book Your Experience</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f0f1a;
+      color: #eef0f4;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 30px 60px;
+      border-bottom: 3px solid #f5a623;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    header h1 { font-size: 3rem; font-weight: 800; letter-spacing: 4px; color: #f5a623; text-transform: uppercase; }
+    header p  { font-size: 1rem; color: #aab0c0; max-width: 600px; }
+
+    /* NAV */
+    nav { margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+
+    nav a {
+      font-size: 0.9rem; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: #eef0f4;
+      padding: 8px 20px; border: 2px solid transparent;
+      border-radius: 25px; transition: all 0.3s ease;
+    }
+
+    nav a:hover { border-color: #f5a623; color: #f5a623; background-color: rgba(245,166,35,0.1); }
+
+    /* SECTIONS */
+    section { padding: 60px 80px; }
+
+    section h2 {
+      font-size: 2rem; font-weight: 700; color: #f5a623;
+      margin-bottom: 20px; display: inline-block;
+    }
+
+    section h2::after {
+      content: ''; display: block; width: 60px; height: 3px;
+      background: #e8445a; margin-top: 8px; border-radius: 2px;
+    }
+
+    section p { color: #aab0c0; font-size: 1rem; max-width: 700px; }
+
+    /* HOME */
+    #home { background-color: #13151f; border-left: 4px solid #f5a623; }
+
+    /* EVENTS */
+    #events { background-color: #0f0f1a; }
+
+    .events-grid { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 35px; }
+
+    /* EVENT CARD */
+    .event-card {
+      background-color: #1a1d28; border: 1px solid #2a2d3a;
+      border-radius: 16px; overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      flex: 1 1 260px; max-width: 320px;
+    }
+
+    .event-card:hover { transform: translateY(-8px); box-shadow: 0 16px 40px rgba(245,166,35,0.2); }
+
+    .event-banner {
+      width: 100%; height: 150px;
+      display: flex; align-items: center; justify-content: center; font-size: 4rem;
+    }
+
+    .banner-concert { background: linear-gradient(135deg, #1a1a4e, #3a1a6e); }
+    .banner-sports  { background: linear-gradient(135deg, #0a3a1a, #1a6e3a); }
+    .banner-music   { background: linear-gradient(135deg, #3a1a0a, #6e3a1a); }
+    .banner-movie   { background: linear-gradient(135deg, #2a0a2a, #6e1a4e); }
+    .banner-comedy  { background: linear-gradient(135deg, #0a2a3a, #1a5a6e); }
+    .banner-dance   { background: linear-gradient(135deg, #3a2a0a, #6e5a1a); }
+
+    .card-body { padding: 20px; }
+
+    .event-label {
+      display: inline-block; background: rgba(245,166,35,0.15); color: #f5a623;
+      font-size: 0.72rem; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .card-body h3 { font-size: 1.05rem; font-weight: 700; color: #eef0f4; margin-bottom: 10px; }
+    .card-body p  { font-size: 0.85rem; color: #7a8099; margin-bottom: 5px; }
+
+    .btn-book {
+      display: block; width: 100%; margin-top: 16px; padding: 11px;
+      background: linear-gradient(90deg, #f5a623, #e8445a);
+      color: #fff; font-size: 0.9rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+    }
+
+    .btn-book:hover { opacity: 0.88; transform: scale(1.02); }
+
+    .btn-book.booked {
+      background: linear-gradient(90deg, #2ecc71, #27ae60);
+      cursor: default; transform: none; letter-spacing: 2px;
+    }
+
+    /* EVENT DETAILS */
+    #event-details { background-color: #13151f; border-left: 4px solid #e8445a; }
+
+    .btn-toggle {
+      margin-top: 18px; padding: 10px 28px;
+      background: transparent; border: 2px solid #e8445a; color: #e8445a;
+      font-size: 0.9rem; font-weight: 700; border-radius: 8px;
+      cursor: pointer; transition: all 0.3s ease;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .btn-toggle:hover { background: #e8445a; color: #fff; }
+
+    .details-box {
+      background: #1a1d28; border: 1px solid #2a2d3a;
+      border-radius: 16px; padding: 30px; margin-top: 20px;
+      max-width: 650px; display: none;
+    }
+
+    .details-box.visible { display: block; }
+    .details-box h3 { font-size: 1.4rem; font-weight: 700; color: #f5a623; margin-bottom: 18px; }
+
+    .detail-row {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 14px; font-size: 0.95rem; color: #aab0c0; flex-wrap: wrap;
+    }
+
+    .detail-icon  { font-size: 1.3rem; width: 30px; text-align: center; }
+    .detail-label { font-weight: 600; color: #eef0f4; min-width: 100px; }
+
+    .price-tag {
+      display: inline-block; background: rgba(232,68,90,0.15);
+      color: #e8445a; font-weight: 700; font-size: 1.1rem;
+      padding: 4px 14px; border-radius: 8px;
+    }
+
+    /* BOOKING */
+    #booking { background-color: #0f0f1a; border-left: 4px solid #f5a623; }
+
+    .booking-form {
+      background: #1a1d28; border: 1px solid #2a2d3a;
+      border-radius: 16px; padding: 35px; margin-top: 25px; max-width: 580px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block; font-size: 0.88rem; font-weight: 600;
+      color: #aab0c0; margin-bottom: 7px;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%; padding: 12px 16px; background: #0f0f1a;
+      border: 2px solid #2a2d3a; border-radius: 8px;
+      color: #eef0f4; font-size: 0.95rem; outline: none; transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus { border-color: #f5a623; }
+
+    .form-group input.error,
+    .form-group select.error { border-color: #e8445a; }
+
+    .error-msg { color: #e8445a; font-size: 0.78rem; margin-top: 5px; display: none; }
+    .error-msg.show { display: block; }
+
+    .btn-submit {
+      width: 100%; padding: 14px;
+      background: linear-gradient(90deg, #f5a623, #e8445a);
+      color: #fff; font-size: 1rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: opacity 0.3s ease; margin-top: 10px;
+    }
+
+    .btn-submit:hover { opacity: 0.88; }
+
+    /* SUCCESS + BOOKING SUMMARY */
+    .success-msg {
+      display: none; margin-top: 20px; padding: 22px;
+      background: rgba(46,204,113,0.08); border: 2px solid #2ecc71;
+      border-radius: 12px; color: #2ecc71;
+      font-weight: 700; font-size: 1.05rem; text-align: center;
+    }
+
+    .success-msg.show { display: block; }
+
+    .booking-summary {
+      margin-top: 18px; background: #0f0f1a;
+      border: 1px solid #2a2d3a; border-radius: 10px; padding: 20px 24px; text-align: left;
+    }
+
+    .booking-summary h4 {
+      color: #f5a623; font-size: 1rem; font-weight: 700;
+      margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    .summary-row {
+      display: flex; gap: 10px; align-items: center;
+      margin-bottom: 12px; font-size: 0.93rem; color: #eef0f4;
+    }
+
+    .summary-row span:first-child { font-size: 1.1rem; width: 26px; }
+    .summary-row strong           { color: #aab0c0; min-width: 120px; font-weight: 600; }
+    .summary-value                { color: #eef0f4; }
+
+    .booking-id-badge {
+      display: inline-block; background: rgba(245,166,35,0.15);
+      color: #f5a623; font-weight: 700; font-size: 0.95rem;
+      padding: 3px 14px; border-radius: 20px; letter-spacing: 1.5px;
+    }
+
+    /* CONTACT */
+    #contact { background-color: #13151f; }
+    #contact p { margin-bottom: 8px; font-size: 0.95rem; }
+
+    /* FOOTER */
+    footer {
+      background-color: #1a1a2e; border-top: 3px solid #f5a623;
+      padding: 40px 80px 25px; color: #7a8099; font-size: 0.85rem;
+    }
+
+    .footer-grid {
+      display: flex; flex-wrap: wrap; gap: 40px;
+      justify-content: space-between; margin-bottom: 30px;
+    }
+
+    .footer-col h4 {
+      color: #f5a623; font-size: 1rem; font-weight: 700;
+      margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .footer-col p,
+    .footer-col a { color: #7a8099; font-size: 0.88rem; display: block; margin-bottom: 8px; transition: color 0.3s; }
+    .footer-col a:hover { color: #f5a623; }
+
+    .footer-bottom { border-top: 1px solid #2a2d3a; padding-top: 18px; text-align: center; font-size: 0.82rem; color: #4a5060; }
+    .footer-bottom span { color: #f5a623; font-weight: 600; }
+
+    /* RESPONSIVE TABLET */
+    @media (max-width: 900px) {
+      header { padding: 25px 30px; }
+      header h1 { font-size: 2.2rem; }
+      section { padding: 40px 30px; }
+      .events-grid { justify-content: center; }
+      .event-card  { max-width: 100%; flex: 1 1 45%; }
+      .booking-form { padding: 25px 20px; }
+      footer { padding: 30px 30px 20px; }
+    }
+
+    /* RESPONSIVE MOBILE */
+    @media (max-width: 600px) {
+      header    { padding: 20px 16px; }
+      header h1 { font-size: 1.8rem; letter-spacing: 2px; }
+      header p  { font-size: 0.88rem; }
+      nav       { gap: 10px; }
+      nav a     { padding: 6px 14px; font-size: 0.78rem; }
+      section   { padding: 30px 16px; }
+      section h2 { font-size: 1.5rem; }
+      .events-grid { flex-direction: column; align-items: center; }
+      .event-card  { width: 100%; max-width: 100%; flex: unset; }
+      .details-box { padding: 20px 16px; }
+      .detail-row  { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .booking-form { padding: 20px 14px; }
+      .summary-row  { flex-wrap: wrap; }
+      footer        { padding: 25px 16px 16px; }
+      .footer-grid  { flex-direction: column; gap: 25px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>🎟️ EventSpark</h1>
+    <p>Your one-stop platform to discover and book tickets for movies, concerts, and sports events.</p>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#events">Events</a>
+      <a href="#event-details">Details</a>
+      <a href="#booking">Booking</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HOME -->
+  <section id="home">
+    <h2>Welcome to EventSpark</h2>
+    <p>EventSpark makes it easy to find and book tickets for the best events near you.
+      Whether you love blockbuster movies, live concerts, or thrilling sports matches —
+      we have something for everyone. Browse events below and reserve your seat in seconds.</p>
+  </section>
+
+  <!-- EVENTS -->
+  <section id="events">
+    <h2>Upcoming Events</h2>
+    <div class="events-grid">
+
+      <div class="event-card">
+        <div class="event-banner banner-concert">🎻</div>
+        <div class="card-body">
+          <span class="event-label">Concert</span>
+          <h3>Interstellar Live Orchestra</h3>
+          <p>📅 10 May 2026</p>
+          <p>📍 MMRDA Grounds, Mumbai</p>
+          <button class="btn-book" onclick="bookTicket(this)">Book Ticket</button>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-banner banner-sports">🏏</div>
+        <div class="card-body">
+          <span class="event-label">Sports</span>
+          <h3>IPL Finals 2026</h3>
+          <p>📅 25 May 2026</p>
+          <p>📍 Wankhede Stadium, Mumbai</p>
+          <button class="btn-book" onclick="bookTicket(this)">Book Ticket</button>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-banner banner-music">🎸</div>
+        <div class="card-body">
+          <span class="event-label">Music Fest</span>
+          <h3>Kaleidoscope Music Fest</h3>
+          <p>📅 1 June 2026</p>
+          <p>📍 Shivaji Park, Pune</p>
+          <button class="btn-book" onclick="bookTicket(this)">Book Ticket</button>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-banner banner-movie">🎬</div>
+        <div class="card-body">
+          <span class="event-label">Movie</span>
+          <h3>Avengers: Endgame Re-Release</h3>
+          <p>📅 15 June 2026</p>
+          <p>📍 PVR Cinemas, Bangalore</p>
+          <button class="btn-book" onclick="bookTicket(this)">Book Ticket</button>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-banner banner-comedy">🎤</div>
+        <div class="card-body">
+          <span class="event-label">Comedy</span>
+          <h3>Laugh Factory Stand-Up Night</h3>
+          <p>📅 20 June 2026</p>
+          <p>📍 Nehru Centre, Mumbai</p>
+          <button class="btn-book" onclick="bookTicket(this)">Book Ticket</button>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-banner banner-dance">💃</div>
+        <div class="card-body">
+          <span class="event-label">Dance</span>
+          <h3>Rhythms of India – Classical Fest</h3>
+          <p>📅 5 July 2026</p>
+          <p>📍 Bal Gandharva, Pune</p>
+          <button class="btn-book" onclick="bookTicket(this)">Book Ticket</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EVENT DETAILS -->
+  <section id="event-details">
+    <h2>Event Details</h2>
+    <p>Click the button below to view detailed information about our featured event.</p>
+    <button class="btn-toggle" onclick="toggleDetails()">Show Event Details</button>
+
+    <div class="details-box" id="detailsBox">
+      <h3>🎻 Interstellar Live Orchestra</h3>
+      <div class="detail-row">
+        <span class="detail-icon">📅</span>
+        <span class="detail-label">Date & Time</span>
+        <span>10 May 2026 &nbsp;|&nbsp; 7:00 PM onwards</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-icon">📍</span>
+        <span class="detail-label">Venue</span>
+        <span>MMRDA Grounds, BKC, Mumbai</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-icon">🎫</span>
+        <span class="detail-label">Ticket Price</span>
+        <span class="price-tag">₹ 799 onwards</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-icon">🪑</span>
+        <span class="detail-label">Availability</span>
+        <span>Seats Available: 240 / 500</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-icon">📞</span>
+        <span class="detail-label">Support</span>
+        <span>support@eventspark.com</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING FORM -->
+  <section id="booking">
+    <h2>Book Your Ticket</h2>
+    <p>Fill in the details below to reserve your seat at your favourite event.</p>
+
+    <div class="booking-form">
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" />
+        <span class="error-msg" id="nameError">⚠ Please enter your full name.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email address" />
+        <span class="error-msg" id="emailError">⚠ Please enter a valid email address.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="eventSelect">Select Event</label>
+        <select id="eventSelect">
+          <option value="">-- Choose an Event --</option>
+          <option value="Interstellar Live Orchestra">🎻 Interstellar Live Orchestra</option>
+          <option value="IPL Finals 2026">🏏 IPL Finals 2026</option>
+          <option value="Kaleidoscope Music Fest">🎸 Kaleidoscope Music Fest</option>
+          <option value="Avengers: Endgame Re-Release">🎬 Avengers: Endgame Re-Release</option>
+          <option value="Laugh Factory Stand-Up Night">🎤 Laugh Factory Stand-Up Night</option>
+          <option value="Rhythms of India – Classical Fest">💃 Rhythms of India – Classical Fest</option>
+        </select>
+        <span class="error-msg" id="eventError">⚠ Please select an event.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="ticketCount">Number of Tickets</label>
+        <input type="number" id="ticketCount" placeholder="Enter number of tickets (1–10)" min="1" max="10" />
+        <span class="error-msg" id="ticketError">⚠ Please enter a valid ticket count (1–10).</span>
+      </div>
+
+      <button class="btn-submit" onclick="submitBooking()">Confirm Booking</button>
+
+      <!-- SUCCESS + BOOKING SUMMARY -->
+      <div class="success-msg" id="successMsg">
+        🎉 Booking Confirmed! Thank you for choosing EventSpark.
+
+        <div class="booking-summary">
+          <h4>📋 Booking Summary</h4>
+
+          <div class="summary-row">
+            <span>👤</span>
+            <strong>Name</strong>
+            <span class="summary-value" id="summaryName">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span>📧</span>
+            <strong>Email</strong>
+            <span class="summary-value" id="summaryEmail">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span>🎟️</span>
+            <strong>Event</strong>
+            <span class="summary-value" id="summaryEvent">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span>🪑</span>
+            <strong>Tickets</strong>
+            <span class="summary-value" id="summaryTickets">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span>📅</span>
+            <strong>Booking Date</strong>
+            <span class="summary-value" id="summaryDate">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span>🆔</span>
+            <strong>Booking ID</strong>
+            <span class="booking-id-badge" id="summaryID">—</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>📧 Email: support@eventspark.com</p>
+    <p>📞 Phone: +91 98765 43210</p>
+    <p>🕐 Support Hours: Mon – Sat, 9 AM to 6 PM</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>🎟️ EventSpark</h4>
+        <p>Discover and book tickets for the best events near you — movies, concerts, sports and more.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="#home">Home</a>
+        <a href="#events">Events</a>
+        <a href="#booking">Booking</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <p>📧 support@eventspark.com</p>
+        <p>📞 +91 98765 43210</p>
+        <p>🕐 Mon – Sat, 9 AM – 6 PM</p>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <p>🎬 Movies</p>
+        <p>🎸 Concerts</p>
+        <p>🏏 Sports</p>
+        <p>💃 Dance & Arts</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 <span>EventSpark</span>. All rights reserved. &nbsp;|&nbsp;
+      Designed by <span>Rajashri Kalshetti</span> | Front-End Development Intern @ Sysslan IT Solutions</p>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    // Book Ticket button click
+    function bookTicket(button) {
+      if (!button.classList.contains('booked')) {
+        button.classList.add('booked');
+        button.textContent = '✔ Booked!';
+        button.disabled = true;
+      }
+    }
+
+    // Show / Hide Event Details
+    function toggleDetails() {
+      const box    = document.getElementById('detailsBox');
+      const btn    = document.querySelector('.btn-toggle');
+      const isOpen = box.classList.contains('visible');
+      if (isOpen) {
+        box.classList.remove('visible');
+        btn.textContent = 'Show Event Details';
+      } else {
+        box.classList.add('visible');
+        btn.textContent = 'Hide Event Details';
+      }
+    }
+
+    // Booking Form Submit + Validation + Summary
+    function submitBooking() {
+      let isValid = true;
+
+      const name        = document.getElementById('name');
+      const email       = document.getElementById('email');
+      const eventSelect = document.getElementById('eventSelect');
+      const ticketCount = document.getElementById('ticketCount');
+
+      // Clear old errors
+      clearError('name',        'nameError');
+      clearError('email',       'emailError');
+      clearError('eventSelect', 'eventError');
+      clearError('ticketCount', 'ticketError');
+      document.getElementById('successMsg').classList.remove('show');
+
+      // Validate Name
+      if (name.value.trim() === '') { showError('name', 'nameError'); isValid = false; }
+
+      // Validate Email
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email.value.trim())) { showError('email', 'emailError'); isValid = false; }
+
+      // Validate Event
+      if (eventSelect.value === '') { showError('eventSelect', 'eventError'); isValid = false; }
+
+      // Validate Tickets
+      const tickets = parseInt(ticketCount.value);
+      if (isNaN(tickets) || tickets < 1 || tickets > 10) { showError('ticketCount', 'ticketError'); isValid = false; }
+
+      if (isValid) {
+
+        // Random Booking ID
+        const bookingID = 'ES' + Math.floor(100000 + Math.random() * 900000);
+
+        // Today's date
+        const today   = new Date();
+        const dateStr = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+
+        // Fill summary fields
+        document.getElementById('summaryName').textContent    = name.value.trim();
+        document.getElementById('summaryEmail').textContent   = email.value.trim();
+        document.getElementById('summaryEvent').textContent   = eventSelect.value;
+        document.getElementById('summaryTickets').textContent = tickets + (tickets === 1 ? ' Ticket' : ' Tickets');
+        document.getElementById('summaryDate').textContent    = dateStr;
+        document.getElementById('summaryID').textContent      = bookingID;
+
+        // Show success box
+        document.getElementById('successMsg').classList.add('show');
+
+        // Auto scroll to summary
+        document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Reset form
+        name.value = ''; email.value = ''; eventSelect.value = ''; ticketCount.value = '';
+      }
+    }
+
+    function showError(fieldId, errorId) {
+      document.getElementById(fieldId).classList.add('error');
+      document.getElementById(errorId).classList.add('show');
+    }
+
+    function clearError(fieldId, errorId) {
+      document.getElementById(fieldId).classList.remove('error');
+      document.getElementById(errorId).classList.remove('show');
+    }
+
+  </script>
+
+</body>
+</html>
